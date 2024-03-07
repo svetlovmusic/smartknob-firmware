@@ -57,6 +57,7 @@ private:
     void renderEffectLightHouse();
     void renderTrailEffect();
     void renderFadeInEffect();
+    void renderCoolEffects();
     void renderFadeOutEffect();
 };
 
