@@ -89,9 +89,7 @@ void setup()
     motor_task.setLogger(&root_task);
     motor_task.begin();
 
-    #if SUSPENDABLE_TASKS
-        DisplayBuffer::getInstance()->registerSuspendableTask(motor_task.getHandle());
-    #endif
+   
 
 #if SK_WIFI
     wifi_task.setLogger(&root_task);
