@@ -371,6 +371,21 @@ bool Configuration::loadWiFiConfiguration()
 
     LOGV(LOG_LEVEL_DEBUG, "Loaded wifi credentials %s %s %d", wifi_config.ssid, wifi_config.passphrase, is_wifi_set);
 
+    uint8_t wifi_flag = EEPROM.read(WIFI_SET_EEPROM_POS);
+
+    if (wifi_flag == 0xFF)
+    {
+        // If uninitialized, assume Wi-Fi is not set and write default value
+        is_wifi_set = false;
+        EEPROM.put(WIFI_SET_EEPROM_POS, is_wifi_set);
+        EEPROM.commit(); // Save changes to EEPROM
+    }
+    else
+    {
+        // If initialized, read the actual Wi-Fi flag
+        EEPROM.get(WIFI_SET_EEPROM_POS, is_wifi_set);
+    }
+
     return is_wifi_set;
 }
 
