@@ -475,7 +475,7 @@ void RootTask::run()
             switch (app_state.os_mode_state)
             {
             case OSMode::ONBOARDING:
-                if (strcmp(latest_state_.config.id, "ONBOARDING") == 0)
+                if (strcmp(latest_state_.config.id, "ONBOARDING") == 0 || strcmp(latest_state_.config.id, "spotify") == 0)
                 {
                     entity_state_update_to_send = display_task_->getOnboardingFlow()->update(app_state);
                 }
@@ -779,7 +779,8 @@ void RootTask::loadConfiguration()
             configuration_->loadOSConfiguration();
 
 #if SK_WIFI
-            if (configuration_->getOSConfiguration()->mode == HASS && configuration_->loadWiFiConfiguration())
+            // if (configuration_->getOSConfiguration()->mode == HASS && configuration_->loadWiFiConfiguration())
+            if (configuration_->loadWiFiConfiguration())
             {
 
                 WiFiConfiguration wifi_config = configuration_->getWiFiConfiguration();

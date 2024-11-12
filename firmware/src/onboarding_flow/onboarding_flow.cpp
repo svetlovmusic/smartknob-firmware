@@ -78,6 +78,11 @@ void OnboardingFlow::handleNavigationEvent(NavigationEvent event)
         hass_flow->handleNavigationEvent(event);
         return;
     }
+    if (active_sub_menu == SPOTIFY_SUB_MENU)
+    {
+        spotify_app.handleNavigation(event);
+        return;
+    }
     if (active_sub_menu == NONE)
     {
         switch (event)
@@ -92,6 +97,11 @@ void OnboardingFlow::handleNavigationEvent(NavigationEvent event)
                 wifi_notifier->requestAP();
                 active_sub_menu = HASS_SUB_MENU;
                 hass_flow->render();
+                break;
+            case SPOTIFY_PAGE:
+                active_sub_menu = SPOTIFY_SUB_MENU;
+                spotify_app.render();
+                // wifi_notifier->requestSTA();
                 break;
             case DEMO_PAGE:
                 os_config_notifier->setOSMode(OSMode::DEMO);
@@ -108,11 +118,22 @@ void OnboardingFlow::handleNavigationEvent(NavigationEvent event)
 
 EntityStateUpdate OnboardingFlow::update(AppState state)
 {
+    if (active_sub_menu == SPOTIFY_SUB_MENU)
+    {
+        spotify_app.updateStateFromSystem(state);
+        spotify_app.updateStateFromKnob(state.motor_state);
+        return EntityStateUpdate();
+    }
     return updateStateFromKnob(state.motor_state);
 }
 
 EntityStateUpdate OnboardingFlow::updateStateFromKnob(PB_SmartKnobState state)
 {
+    if (active_sub_menu == SPOTIFY_SUB_MENU)
+    {
+        return spotify_app.updateStateFromKnob(state);
+    }
+
     if (current_position != state.current_position)
     {
         current_position = state.current_position;
@@ -127,6 +148,7 @@ void OnboardingFlow::setMotorNotifier(MotorNotifier *motor_notifier)
 {
     this->motor_notifier = motor_notifier;
     hass_flow->setMotorNotifier(motor_notifier); // TODO: BAD WAY? FIX
+    spotify_app.setMotorNotifier(motor_notifier);
 }
 
 void OnboardingFlow::triggerMotorConfigUpdate()
