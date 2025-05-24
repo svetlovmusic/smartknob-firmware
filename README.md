@@ -122,3 +122,5 @@ Scott's original "Inside the SmartKnob View" remains highly relevant, despite so
 Our Smart Knob Dev Kit comes with pre-flashed firmware, the same version that you can find in this repository. The Smart Knob uses [PlatformIO](https://platformio.org/) to build the firmware. We recommend using [Microsoft Visual Studio Code](https://code.visualstudio.com/) as the development environment, where you can install the PlatformIO IDE.
 
 To proceed, check out this codebase on your machine. Then, from Visual Studio Code, navigate to the PlatformIO tab. Select 'Upload and Monitor All' from the Project Tasks. This will open a terminal, compile the code, upload the firmware, and monitor the serial communication between your computer and the knob.
+
+For a step-by-step guide in Russian, see [docs/flashing_ru.md](docs/flashing_ru.md).
