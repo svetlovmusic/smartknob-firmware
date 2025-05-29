@@ -22,7 +22,7 @@ const MqttComp = () => {
 
     try {
       setDisabled(true);
-      const response = await fetch(`http://${window.location.hostname}/mqtt`, {
+      const response = await fetch(`https://${window.location.hostname}/mqtt`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

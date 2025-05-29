@@ -59,7 +59,7 @@ void WiFiOnboardingFlow::handleEvent(WiFiEvent event)
     case SK_AP_CLIENT:
         if (event.body.ap_client.connected)
         {
-            sprintf(ip_data, "%s", "http://192.168.4.1/?wifi", WiFi.localIP().toString().c_str()); // always the same
+            sprintf(ip_data, "%s", "https://192.168.4.1/?wifi", WiFi.localIP().toString().c_str()); // always the same
             lv_qrcode_update(page_server->qr, ip_data, strlen(ip_data));
 
             page_mgr->show(getWiFiPageEnum(WEBSERVER_QRCODE_PAGE));

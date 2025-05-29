@@ -7,6 +7,7 @@
 #include <HTTPClient.h>
 #include <base64.h>
 #include <WebServer.h>
+#include <ESPAsyncWebServer.h>
 #include <vector>
 #include <Preferences.h>
 
@@ -69,10 +70,12 @@ private:
     void publishState(const ConnectivityState &state);
     char buf_[128];
     WebServer *server_;
+    AsyncWebServer *https_server_;
     Preferences preferences;
 
     void publishWiFiEvent(WiFiEvent event);
     void startWebServer();
+    void startSecureWebServer();
     bool is_webserver_started = false;
     void startWiFiAP();
     bool startWiFiSTA(WiFiConfiguration wifi_config);

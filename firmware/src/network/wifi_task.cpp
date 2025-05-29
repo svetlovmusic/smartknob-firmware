@@ -4,6 +4,7 @@
 #include "../util.h"
 #include "cJSON.h"
 #include "../root_task.h"
+#include "certificates.h"
 
 #if SK_NETWORKING
 #include "wifi_config.h"
@@ -16,7 +17,7 @@ QueueHandle_t wifi_events_queue;
 // example article
 // https://techtutorialsx.com/2021/01/04/esp32-soft-ap-and-station-modes/
 
-WifiTask::WifiTask(const uint8_t task_core, Configuration &configuration) : Task{"wifi", 1024 * 10, 1, task_core}, configuration_(configuration)
+WifiTask::WifiTask(const uint8_t task_core, Configuration &configuration) : Task{"wifi", 1024 * 10, 1, task_core}, configuration_(configuration), server_(nullptr), https_server_(nullptr)
 {
     mutex_ = xSemaphoreCreateMutex();
     assert(mutex_ != NULL);
@@ -452,10 +453,71 @@ void WifiTask::startWebServer()
 
     server_->begin();
 
+    startSecureWebServer();
+
     LOGV(LOG_LEVEL_INFO, "WebServer started");
 
     is_webserver_started = true;
     // TODO: send event to
+}
+
+void WifiTask::startSecureWebServer()
+{
+    https_server_ = new AsyncWebServer(443);
+
+    https_server_->on("/download/config", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        if (FFat.exists(CONFIG_PATH)) {
+            File file = FFat.open(CONFIG_PATH, "r");
+            request->send(file, String(file.name()), String("application/octet-stream"));
+            file.close();
+        } else {
+            request->send(404, "text/plain", "File Not Found");
+        }
+    });
+
+    https_server_->on("/wifi", HTTP_POST, [this](AsyncWebServerRequest *request){
+        if (!request->hasParam("plain", true)) {
+            request->send(400, "text/plain", "Invalid Body");
+            return;
+        }
+        String body = request->getParam("plain", true)->value();
+        cJSON *root = cJSON_Parse(body.c_str());
+        std::string ssid = cJSON_GetStringValue(cJSON_GetObjectItem(root, "ssid"));
+        std::string pass = cJSON_GetStringValue(cJSON_GetObjectItem(root, "password"));
+        cJSON_Delete(root);
+        if (ssid.empty() || pass.empty()) {
+            request->send(400, "text/plain", "Invalid WiFi credentials!");
+            return;
+        }
+        WiFiConfiguration wifi_config;
+        snprintf(wifi_config.ssid, sizeof(wifi_config.ssid), "%s", ssid.c_str());
+        snprintf(wifi_config.passphrase, sizeof(wifi_config.passphrase), "%s", pass.c_str());
+        snprintf(wifi_config.knob_id, sizeof(wifi_config.knob_id), "%s", wifi_config_.knob_id);
+
+        if (tryNewCredentialsWiFiSTA(wifi_config)) {
+            WiFiEvent wifi_sta_connected;
+            wifi_sta_connected.type = SK_WIFI_STA_CONNECTED_NEW_CREDENTIALS;
+            sprintf(wifi_sta_connected.body.wifi_sta_connected.ssid, "%s", ssid.c_str());
+            sprintf(wifi_sta_connected.body.wifi_sta_connected.passphrase, "%s", pass.c_str());
+            publishWiFiEvent(wifi_sta_connected);
+
+            char response[128];
+            snprintf(response, sizeof(response), "{\"redirect\": \"mqtt\", \"data\": \"%s\"}", WiFi.localIP().toString().c_str());
+            request->send(200, "application/json", response);
+        } else {
+            request->send(302, "text/plain", "Invalid WiFi credentials!");
+        }
+    });
+
+    https_server_->on("/mqtt", HTTP_POST, [this](AsyncWebServerRequest *request){
+        request->send(200, "text/plain", "Not Implemented");
+    });
+
+    https_server_->serveStatic("/", FFat, "/setup/");
+
+    extern const char cert_pem[];
+    extern const char key_pem[];
+    https_server_->beginSecure(cert_pem, key_pem, nullptr);
 }
 
 void WifiTask::run()

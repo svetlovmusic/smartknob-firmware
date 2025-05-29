@@ -41,7 +41,7 @@ const SetupPage = () => {
       </div>
       <br />
       <div id='download-btn'>
-        <a href={`http://${window.location.hostname}/download/config`} download>
+        <a href={`https://${window.location.hostname}/download/config`} download>
           <button>Download Config</button>
         </a>
       </div>

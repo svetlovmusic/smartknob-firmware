@@ -44,7 +44,7 @@ public:
 
         or_connect_label = lv_label_create(page);
         lv_label_set_recolor(or_connect_label, true);
-        snprintf(buf, sizeof(buf), "SCAN OR\nOPEN #FFFFFF http://%s#\n IN YOUR BROWSER", WiFi.localIP().toString().c_str());
+        snprintf(buf, sizeof(buf), "SCAN OR\nOPEN #FFFFFF https://%s#\n IN YOUR BROWSER", WiFi.localIP().toString().c_str());
         lv_label_set_text(or_connect_label, buf);
         lv_obj_set_style_text_color(or_connect_label, LV_COLOR_MAKE(0x80, 0xFF, 0x50), LV_PART_MAIN);
         lv_obj_set_style_text_align(or_connect_label, LV_TEXT_ALIGN_CENTER, 0);

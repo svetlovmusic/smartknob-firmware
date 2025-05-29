@@ -20,7 +20,7 @@ const WiFiComp = () => {
 
     try {
       setDisabled(true);
-      const response = await fetch(`http://${window.location.hostname}/wifi`, {
+      const response = await fetch(`https://${window.location.hostname}/wifi`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
