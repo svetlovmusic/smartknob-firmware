@@ -151,7 +151,7 @@ void SpotifyApp::initQrScreen()
     lv_obj_add_flag(qr_screen, LV_OBJ_FLAG_HIDDEN);
 
     qr_code = lv_qrcode_create(qr_screen, 80, LV_COLOR_MAKE(0x00, 0x00, 0x00), LV_COLOR_MAKE(0xFF, 0xFF, 0xFF));
-    lv_qrcode_update(qr_code, "http://192.168.4.1/?spotify", strlen("http://192.168.4.1/?spotify"));
+    lv_qrcode_update(qr_code, "https://192.168.4.1/?spotify", strlen("https://192.168.4.1/?spotify"));
     lv_obj_align(qr_code, LV_ALIGN_CENTER, 0, 0);
 
     lv_obj_t *label = lv_label_create(qr_screen);
@@ -249,7 +249,7 @@ void SpotifyApp::updateStateFromSystem(AppState state)
         if (state.connectivity_state.is_connected)
         {
             static char ip_data[50];
-            sprintf(ip_data, "http://%s/?spotify", state.connectivity_state.ip_address);
+            sprintf(ip_data, "https://%s/?spotify", state.connectivity_state.ip_address);
             lv_qrcode_update(qr_code, ip_data, strlen(ip_data));
         }
         else

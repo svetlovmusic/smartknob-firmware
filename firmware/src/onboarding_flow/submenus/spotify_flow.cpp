@@ -50,7 +50,7 @@ void SpotifyOnboardingFlow::handleEvent(WiFiEvent event)
     {
     case SK_WIFI_STA_CONNECTED_NEW_CREDENTIALS:
 
-        sprintf(ip_data, "http://%s/?spotify", WiFi.localIP().toString().c_str()); // always the same
+        sprintf(ip_data, "https://%s/?spotify", WiFi.localIP().toString().c_str()); // always the same
         lv_qrcode_update(page_server->qr, ip_data, strlen(ip_data));
 
         lv_label_set_text_fmt(page_server->or_connect_label, "SCAN OR\nOPEN #FFFFFF http://%s#\n IN YOUR BROWSER", WiFi.localIP().toString().c_str());

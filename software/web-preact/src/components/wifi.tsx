@@ -47,7 +47,7 @@ const WiFiComp = () => {
           console.log(json.data);
 
           //   window.location.href = '/?' + json.redirect;
-          window.location.href = `http://${json.data}/?spotify`; // SEND URL TO PAGE SOMEHOW OF IP CONNECTED WIFI ????
+          window.location.href = `https://${json.data}/?spotify`; // SEND URL TO PAGE SOMEHOW OF IP CONNECTED WIFI ????
         } else {
           window.location.href = '/?' + json.redirect;
         }
