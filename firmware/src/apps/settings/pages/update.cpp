@@ -20,7 +20,7 @@ UpdateSettingsPage::UpdateSettingsPage(lv_obj_t *parent) : BasePage(parent)
     lv_label_set_text(update_label, "SCAN TO UPDATE");
 
     update_qrcode = lv_qrcode_create(container, 80, LV_COLOR_MAKE(0x00, 0x00, 0x00), LV_COLOR_MAKE(0xFF, 0xFF, 0xFF));
-    lv_qrcode_update(update_qrcode, "http://192.168.4.1/update", strlen("http://192.168.4.1/update"));
+    lv_qrcode_update(update_qrcode, "https://192.168.4.1/update", strlen("https://192.168.4.1/update"));
     lv_obj_align(update_qrcode, LV_ALIGN_CENTER, 0, -20);
 
     update_url_label = lv_label_create(container);
@@ -36,12 +36,12 @@ void UpdateSettingsPage::updateFromSystem(AppState state)
 
         if (!state.connectivity_state.is_connected)
         {
-            lv_qrcode_update(update_qrcode, "http://192.168.4.1/update", strlen("http://192.168.4.1/update"));
+            lv_qrcode_update(update_qrcode, "https://192.168.4.1/update", strlen("https://192.168.4.1/update"));
         }
         else
         {
             char ip_data[50];
-            sprintf(ip_data, "http://%s/update", state.connectivity_state.ip_address);
+            sprintf(ip_data, "https://%s/update", state.connectivity_state.ip_address);
             lv_qrcode_update(update_qrcode, ip_data, strlen(ip_data));
             lv_label_set_text_fmt(update_url_label, "%s", ip_data);
         }

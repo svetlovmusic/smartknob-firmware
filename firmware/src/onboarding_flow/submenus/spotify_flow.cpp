@@ -53,7 +53,7 @@ void SpotifyOnboardingFlow::handleEvent(WiFiEvent event)
         sprintf(ip_data, "https://%s/?spotify", WiFi.localIP().toString().c_str()); // always the same
         lv_qrcode_update(page_server->qr, ip_data, strlen(ip_data));
 
-        lv_label_set_text_fmt(page_server->or_connect_label, "SCAN OR\nOPEN #FFFFFF http://%s#\n IN YOUR BROWSER", WiFi.localIP().toString().c_str());
+        lv_label_set_text_fmt(page_server->or_connect_label, "SCAN OR\nOPEN #FFFFFF https://%s#\n IN YOUR BROWSER", WiFi.localIP().toString().c_str());
         lv_obj_align_to(page_server->or_connect_label, page_server->qr, LV_ALIGN_OUT_BOTTOM_MID, 0, 12);
         break;
 
